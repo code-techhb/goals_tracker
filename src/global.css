@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Italianno&family=Itim&display=swap");
+:root {
+  --brown: #9d5743;
+  --white: #fff;
+  --black: #000;
+  --background-color: #c29a9a;
+  --brown-transparent: rgba(157, 87, 67, 0.79);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: "Itim", sans-serif;
+  background-color: var(--background-color);
+}
