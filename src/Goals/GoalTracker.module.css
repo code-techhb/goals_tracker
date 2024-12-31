@@ -1,5 +1,5 @@
 .container {
-  width: 288px;
+  width: 35rem;
   background-color: var(--black);
   color: var(--white);
   border-radius: 8px;
@@ -14,15 +14,16 @@
 
 .header h2 {
   font-size: 2.4rem;
-  font-style: italic;
   margin: 0;
 }
 
 .content {
   padding: 1.6rem;
+  font-size: 1.8rem;
 }
 
 .emptyState {
+  font-size: 1.9rem;
   text-align: center;
   color: var(--gray);
   margin-bottom: 1.6rem;
@@ -81,6 +82,7 @@
 }
 
 .footer {
+  font-size: 1.8rem;
   border-top: 1px solid #374151;
   padding: 1.6rem;
   display: flex;
@@ -89,16 +91,18 @@
 }
 
 .notesButton {
+  font-family: "Itim";
+  font-size: 1.8rem;
   background: none;
   border: none;
-  color: var(--gray);
+  color: var(--white);
   cursor: pointer;
   padding: 0;
   text-align: left;
 }
 
 .notesButton:hover {
-  color: var(--white);
+  color: var(--gray);
 }
 
 .modalOverlay {
@@ -125,7 +129,7 @@
 
 .modal h3 {
   margin: 0 0 16px 0;
-  font-size: 20px;
+  font-size: 2rem;
 }
 
 .input,
@@ -150,6 +154,7 @@
 
 .cancelButton,
 .submitButton {
+  font-family: "Itim";
   padding: 0.8rem 1.6rem;
   border-radius: 4px;
   cursor: pointer;
@@ -173,7 +178,8 @@
 .formGroup label {
   display: block;
   margin-bottom: 0.8rem;
-  font-weight: 500;
+  font-size: 1.6rem;
+  font-weight: 400;
 }
 
 .confetti {
@@ -181,7 +187,7 @@
   width: 1rem;
   height: 1rem;
   pointer-events: none;
-  animation: confettiFall 2s linear forwards;
+  animation: confettiFall 3s linear forwards;
   z-index: 1000;
 }
 

@@ -5,7 +5,6 @@ import "./global.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AuthPage from "./Authentication/AuthPage";
 import Dashboard from "./Dashboard/Dashboard";
-import GoalTracker from "./Goals/GoalTracker";
 
 function App() {
   return (
@@ -20,7 +19,6 @@ function App() {
           <Route path="/sign-up" element={<AuthPage mode="sign-up" />} />
           {/* temp */}
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/goals" element={<GoalTracker />} />
         </Routes>
 
         {/* end routes here */}

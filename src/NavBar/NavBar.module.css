@@ -3,6 +3,7 @@
   background-color: var(--brown);
   color: var(--white);
   font-size: 1.8rem;
+  /* z-index: 500; */
 }
 
 .navContainer ul {

@@ -26,7 +26,7 @@ function Navbar() {
           {isSignedIn && (
             <>
               <li>
-                <NavLink to="/goals">Goals</NavLink>
+                <NavLink to="/dashboard">Dashboard</NavLink>
               </li>
               <li>
                 <NavLink to="/notes">Notes</NavLink>

@@ -34,7 +34,7 @@ function GoalTracker() {
       // Remove confetti after animation
       setTimeout(() => {
         confetti.remove();
-      }, 2000);
+      }, 3000);
     }
   };
 
@@ -123,7 +123,7 @@ function GoalTracker() {
                 goal.completed ? styles.completed : ""
               }`}
             >
-              goal #{index + 1}: {goal.text}
+              Goal Nº {index + 1}: {goal.text}
             </span>
             <button
               onClick={() => handleEdit(index)}
@@ -144,7 +144,7 @@ function GoalTracker() {
             className={styles.addButton}
           >
             <Plus size={16} />
-            add goal #{goals.length + 1}
+            add goal Nº {goals.length + 1}
           </button>
         )}
       </div>
@@ -191,10 +191,10 @@ function GoalTracker() {
       {isReflectionModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h3>Reflect on Your Achievement</h3>
+            <h3> 🥳 Reflect on Your Achievement</h3>
             <div className={styles.reflectionForm}>
               <div className={styles.formGroup}>
-                <label>How has achieving this goal helped you grow?</label>
+                <label>How has achieving this goal helped you grow 🤩?</label>
                 <textarea
                   value={currentReflection.growth}
                   onChange={(e) =>
@@ -208,7 +208,7 @@ function GoalTracker() {
               </div>
               <div className={styles.formGroup}>
                 <label>
-                  What was the most memorable moment in working towards it?
+                  What was the most memorable moment in working towards it 😍?
                 </label>
                 <textarea
                   value={currentReflection.memorable}
