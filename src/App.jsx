@@ -5,6 +5,7 @@ import "./global.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AuthPage from "./Authentication/AuthPage";
 import Dashboard from "./Dashboard/Dashboard";
+import Notes from "./NotesCollection/NotesCollection";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/sign-up" element={<AuthPage mode="sign-up" />} />
           {/* temp */}
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/notes" element={<Notes />} />
         </Routes>
 
         {/* end routes here */}

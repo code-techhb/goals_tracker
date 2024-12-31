@@ -1,0 +1,109 @@
+.notesContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 2rem;
+  max-width: 140rem;
+  margin: 0 auto;
+}
+
+.header {
+  background-color: var(--white);
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 1rem 2rem;
+  border-radius: 16px;
+}
+
+.header h1 {
+  font-size: 3rem;
+  margin-bottom: 0.8rem;
+}
+
+.header p {
+  font-size: 1.6rem;
+  color: var(--brown);
+}
+
+.monthButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.monthButton {
+  padding: 10px 20px;
+  border: 2px solid #f43f5e;
+  border-radius: 8px;
+  background: none;
+  color: #f43f5e;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.monthButton:hover:not(:disabled) {
+  background-color: #f43f5e;
+  color: white;
+}
+
+.monthButton.active {
+  background-color: #f43f5e;
+  color: white;
+}
+
+.monthButton:disabled {
+  border-color: #ccc;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.noteCount {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #f43f5e;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.cardsGrid {
+  display: grid;
+  gap: 24px;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.gridOne {
+  grid-template-columns: minmax(288px, 1fr);
+  max-width: 288px;
+  margin: 0 auto;
+}
+
+.gridTwo {
+  grid-template-columns: repeat(2, 288px);
+}
+
+.gridThree {
+  grid-template-columns: repeat(3, 288px);
+}
+
+.gridFour {
+  grid-template-columns: repeat(4, 288px);
+}
+
+.emptyState {
+  text-align: center;
+  color: #666;
+  padding: 40px;
+}
