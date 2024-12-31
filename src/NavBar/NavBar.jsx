@@ -1,16 +1,42 @@
 import styles from "./Navbar.module.css";
+import { NavLink } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 
 function Navbar() {
+  const { isSignedIn, signOut } = useAuth();
+
   return (
     <nav className={styles.navContainer}>
-      <h1>StepBy25</h1>
       <ul>
-        <li>
-          <a href="#">Login</a>
+        <li className={styles.logo}>
+          <NavLink to="/">StepBy25</NavLink>
         </li>
-        <li>
-          <a href="#">Contact</a>
-        </li>
+
+        <div className={styles.navLinks}>
+          {!isSignedIn && (
+            <>
+              <li>
+                <NavLink to="/sign-in">Login</NavLink>
+              </li>
+              <li>
+                <NavLink to="/sign-up">Sign Up</NavLink>
+              </li>
+            </>
+          )}
+          {isSignedIn && (
+            <>
+              <li>
+                <NavLink to="/goals">Goals</NavLink>
+              </li>
+              <li>
+                <NavLink to="/notes">Notes</NavLink>
+              </li>
+              <li>
+                <button onClick={() => signOut()}>Logout</button>
+              </li>
+            </>
+          )}
+        </div>
       </ul>
     </nav>
   );

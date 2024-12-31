@@ -1,0 +1,195 @@
+.container {
+  width: 288px;
+  background-color: var(--black);
+  color: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.header {
+  background-color: var(--brown);
+  padding: 1.2rem;
+  text-align: center;
+}
+
+.header h2 {
+  font-size: 2.4rem;
+  font-style: italic;
+  margin: 0;
+}
+
+.content {
+  padding: 1.6rem;
+}
+
+.emptyState {
+  text-align: center;
+  color: var(--gray);
+  margin-bottom: 1.6rem;
+}
+
+.goalItem {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.checkbox {
+  width: 1.6rem;
+  height: 1.6rem;
+  cursor: pointer;
+}
+
+.goalText {
+  flex: 1;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: var(--gray);
+}
+
+.editButton {
+  background: none;
+  border: none;
+  color: var(--gray);
+  cursor: pointer;
+  padding: 0.4rem;
+}
+
+.editButton:hover {
+  color: var(--white);
+}
+
+.addButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background: none;
+  border: none;
+  color: var(--gray);
+  cursor: pointer;
+  padding: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.addButton:hover {
+  color: var(--white);
+}
+
+.footer {
+  border-top: 1px solid #374151;
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.notesButton {
+  background: none;
+  border: none;
+  color: var(--gray);
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.notesButton:hover {
+  color: var(--white);
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--brown-transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: var(--white);
+  color: var(--black);
+  padding: 2.4rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 50rem;
+}
+
+.modal h3 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.4rem;
+  margin-bottom: 1.6rem;
+}
+
+.textarea {
+  min-height: 10rem;
+  resize: vertical;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+}
+
+.cancelButton,
+.submitButton {
+  padding: 0.8rem 1.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancelButton {
+  background-color: var(--white);
+  border: 1px solid #e5e7eb;
+}
+
+.submitButton {
+  background-color: var(--brown);
+  color: var(--white);
+  border: none;
+}
+
+.formGroup {
+  margin-bottom: 1.6rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-weight: 500;
+}
+
+.confetti {
+  position: fixed;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: none;
+  animation: confettiFall 2s linear forwards;
+  z-index: 1000;
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+  }
+}

@@ -1,0 +1,13 @@
+.authPage {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.authContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}

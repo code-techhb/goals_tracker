@@ -11,7 +11,7 @@
   position: relative;
 }
 
-.landingPage::after {
+.landingPage::before {
   content: "";
   position: absolute;
   top: 0;
@@ -29,37 +29,12 @@
   text-align: center;
 }
 
-.textContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2.5rem;
-  margin: 0 2rem;
-  line-height: 1.5;
-}
-
-.textContainer h1 {
+.textContainerLP h1 {
   font-family: "Italianno";
   font-size: 5rem;
   color: var(--black);
 }
 
-.textContainer p {
+.textContainerLP p {
   font-size: 3rem;
-}
-
-.textContainer button {
-  font-family: "Itim";
-  padding: 1rem 2rem;
-  font-size: 1.8rem;
-  background-color: var(--brown);
-  color: var(--white);
-  border: none;
-  border-radius: 16px;
-  cursor: pointer;
-}
-
-.textContainer button:hover {
-  background-color: var(--black);
-  color: var(--white);
 }

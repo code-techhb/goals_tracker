@@ -1,10 +1,11 @@
 import styles from "./LandingPage.module.css";
+import { Link } from "react-router-dom";
 
 function LandingPage() {
   return (
     <>
       <section className={styles.landingPage}>
-        <div className={styles.textContainer}>
+        <div className={`textContainer ${styles.textContainerLP}`}>
           <h1>300 Goals, One Year, Your Journey!</h1>
           <p>
             Turn your dreams into milestones!
@@ -16,7 +17,9 @@ function LandingPage() {
             <br />
             Start small, dream big, and celebrate every step of the journey!
           </p>
-          <button>Get your Digital Planner now</button>
+          <Link to="/sign-up" className="button">
+            Get your Digital Planner now
+          </Link>
         </div>
       </section>
     </>

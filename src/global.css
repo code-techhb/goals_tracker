@@ -3,6 +3,7 @@
   --brown: #9d5743;
   --white: #fff;
   --black: #000;
+  --gray: #9ca3af
   --background-color: #c29a9a;
   --brown-transparent: rgba(157, 87, 67, 0.8);
 }
@@ -26,4 +27,32 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+}
+
+/* button */
+.button {
+  font-family: "Itim";
+  padding: 1rem 2rem;
+  font-size: 1.8rem;
+  background-color: var(--brown);
+  color: var(--white);
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.button:hover {
+  background-color: var(--black);
+  color: var(--white);
+}
+
+/* text container over overlay */
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  margin: 0 2rem;
+  line-height: 1.5;
 }
