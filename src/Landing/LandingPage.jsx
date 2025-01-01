@@ -8,17 +8,15 @@ function LandingPage() {
         <div className={`textContainer ${styles.textContainerLP}`}>
           <h1>300 Goals, One Year, Your Journey!</h1>
           <p>
-            Turn your dreams into milestones!
+            Turn your dreams into milestones ✅!
             <br />
-            With 25 new goals each month, our tracker keeps you inspired,
-            focused, and excited.
-            <br />
-            Work toward 300 amazing achievements in 2025.
-            <br />
-            Start small, dream big, and celebrate every step of the journey!
+            With 25 new goals each month, our goal tracker - StepBy25 keeps you
+            inspired, focused,and excited. <br /> Work toward 300 amazing
+            achievements in 2025. Start small, dream big, and <br />
+            🎉 celebrate every step of the journey!
           </p>
           <Link to="/sign-up" className="button">
-            Get your Digital Planner now
+            Get your Digital Tracker now
           </Link>
         </div>
       </section>

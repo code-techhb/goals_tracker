@@ -1,109 +1,121 @@
-.notesContainer {
+.container {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   flex: 1;
-  padding: 2rem;
-  max-width: 140rem;
+  width: 100%;
+  max-width: 120rem;
   margin: 0 auto;
+  padding: 2rem;
 }
 
 .header {
-  background-color: var(--white);
   text-align: center;
   margin-bottom: 4rem;
-  padding: 1rem 2rem;
-  border-radius: 16px;
 }
 
 .header h1 {
-  font-size: 3rem;
-  margin-bottom: 0.8rem;
+  font-size: 3.2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  color: var(--text-color-dark);
 }
 
 .header p {
   font-size: 1.6rem;
-  color: var(--brown);
+  color: var(--black);
 }
 
 .monthButtons {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 1rem;
   justify-content: center;
-  margin-bottom: 40px;
+  margin-bottom: 4rem;
 }
 
 .monthButton {
-  padding: 10px 20px;
-  border: 2px solid #f43f5e;
+  padding: 1rem 2rem;
+  border: 2px solid var(--secondary-color);
   border-radius: 8px;
   background: none;
-  color: #f43f5e;
+  color: var(--secondary-color);
   cursor: pointer;
   position: relative;
   transition: all 0.3s ease;
+  font-size: 1.4rem;
 }
 
 .monthButton:hover:not(:disabled) {
-  background-color: #f43f5e;
+  background-color: var(--secondary-color);
   color: white;
 }
 
 .monthButton.active {
-  background-color: #f43f5e;
+  background-color: var(--secondary-color);
   color: white;
 }
 
 .monthButton:disabled {
-  border-color: #ccc;
-  color: #ccc;
+  border-color: var(--gray-300);
+  color: var(--gray-300);
   cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.monthButton:disabled:hover {
+  background: none;
+  color: var(--gray-300);
 }
 
 .noteCount {
   position: absolute;
   top: -8px;
   right: -8px;
-  background-color: #f43f5e;
+  background-color: var(--secondary-color);
   color: white;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  width: 2rem;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 1.2rem;
 }
 
-.cardsGrid {
+.notesGrid {
   display: grid;
-  gap: 24px;
-  justify-content: center;
-  padding: 20px 0;
-}
-
-.gridOne {
-  grid-template-columns: minmax(288px, 1fr);
-  max-width: 288px;
-  margin: 0 auto;
-}
-
-.gridTwo {
-  grid-template-columns: repeat(2, 288px);
-}
-
-.gridThree {
-  grid-template-columns: repeat(3, 288px);
-}
-
-.gridFour {
-  grid-template-columns: repeat(4, 288px);
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(32rem, 1fr));
 }
 
 .emptyState {
   text-align: center;
-  color: #666;
-  padding: 40px;
+  color: var(--gray-500);
+  padding: 4rem;
+  font-size: 1.6rem;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .header h1 {
+    font-size: 2.8rem;
+  }
+
+  .notesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .monthButtons {
+    gap: 0.8rem;
+  }
+
+  .monthButton {
+    padding: 0.8rem 1.6rem;
+    font-size: 1.3rem;
+  }
 }

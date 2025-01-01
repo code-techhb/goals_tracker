@@ -1,13 +1,13 @@
 .footer {
-  color: white;
+  color: var(--text-color-primary);
   padding: 1rem;
   text-align: center;
   font-size: 1.4rem;
-  background-color: var(--brown);
+  background-color: var(--overlay);
 }
 
 .footer a {
-  color: var(--black);
+  color: var(--text-color-tertiary);
   text-decoration: none;
 }
 

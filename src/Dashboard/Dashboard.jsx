@@ -64,13 +64,11 @@ function Dashboard() {
         <div className={styles.textContainerDash}>
           <h2>Hey {user ? user.firstName : "welcome to your dashboard"}</h2>
           <p>
-            You are one step closer to your dreams!
-            <br />
-            With 25 fresh goals every month, you have got the perfect roadmap to
-            turn <br />
-            2025 into your year of achievements. 🚀 <br />
-            Stay inspired, stay focused, and let s celebrate every victory – no
-            matter how small! 🎉
+            Turn your dreams into milestones and let your progress be your
+            motivation ⚡️.
+            <br /> With StepBy25, stay Inspired, stay Focused, and celebrate
+            every victory 🎯
+            <br /> – no matter how small! 🎉
           </p>
           <button onClick={addNewMonth} className={styles.button}>
             Add New Month

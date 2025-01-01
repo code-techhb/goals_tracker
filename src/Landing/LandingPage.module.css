@@ -18,7 +18,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--brown-transparent);
+  background-color: var(--overlay);
   z-index: 0;
 }
 
@@ -32,9 +32,10 @@
 .textContainerLP h1 {
   font-family: "Italianno";
   font-size: 5rem;
-  color: var(--black);
+  color: var(--text-color-primary);
 }
 
 .textContainerLP p {
   font-size: 3rem;
+  color: var(--white);
 }

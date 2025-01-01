@@ -1,9 +1,8 @@
 .navContainer {
   padding: 1rem 2rem;
-  background-color: var(--brown);
-  color: var(--white);
+  background-color: var(--overlay);
+  color: var(--black);
   font-size: 1.8rem;
-  /* z-index: 500; */
 }
 
 .navContainer ul {
@@ -15,13 +14,13 @@
 }
 
 .navContainer a {
-  color: var(--white);
+  color: var(--text-color-primary); /* review this later */
   text-decoration: none;
 }
 
 .logo {
-  font-family: "Italianno";
-  font-size: 2.5rem;
+  font-size: 2.3rem;
+  font-weight: 700;
 }
 
 .navLinks {
@@ -30,7 +29,8 @@
 }
 
 .navLinks a:hover {
-  background-color: var(--black);
+  background-color: var(--secondary-color);
+  color: var(--text-color-dark);
   border-radius: 16px;
   padding: 0.5rem 1rem;
 }

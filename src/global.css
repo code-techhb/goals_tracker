@@ -1,11 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Italianno&family=Itim&display=swap");
 :root {
-  --brown: #9d5743;
-  --white: #fff;
-  --black: #000;
-  --gray: #9ca3af;
-  --background-color: #c29a9a;
-  --brown-transparent: rgba(157, 87, 67, 0.8);
+  --background-color: #f6f1e1;
+  --primary-color: #9c7a4f;
+  --secondary-color: #c19a6b;
+  --white: #ffffff;
+  --black: #2f1e0e;
+  --gray: #b7a78a;
+  --gray-300: #e9d7b6;
+  --gray-500: #715f47;
+  --overlay: rgba(47, 30, 14, 0.85);
+
+  --text-color-primary: #d6d0bb;
+  --text-color-secondary: #d1b48c;
+  --text-color-tertiary: #c19a6b;
+  --text-color-accent: #9c7a4f;
+  --text-color-dark: #1a1007;
 }
 
 * {
@@ -34,8 +43,8 @@ body {
   font-family: "Itim";
   padding: 1rem 2rem;
   font-size: 1.8rem;
-  background-color: var(--brown);
-  color: var(--white);
+  background-color: var(--background-color);
+  color: var(--black);
   border: none;
   border-radius: 16px;
   cursor: pointer;
@@ -43,8 +52,8 @@ body {
 }
 
 .button:hover {
-  background-color: var(--black);
-  color: var(--white);
+  background-color: var(--secondary-color);
+  color: var(--black);
 }
 
 /* text container over overlay */
