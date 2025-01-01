@@ -1,21 +1,84 @@
 import styles from "./Dashboard.module.css";
 import { useUser } from "@clerk/clerk-react";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import GoalTracker from "../Goals/GoalTracker";
+import { db } from "../config/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 function Dashboard() {
   const { user } = useUser();
-  const [monthlyCards, setMonthlyCards] = useState(() => {
-    const currentDate = new Date();
-    return [
-      {
-        id: 1,
-        month: currentDate.toLocaleString("default", { month: "long" }),
-        year: currentDate.getFullYear(),
-        timestamp: currentDate.getTime(),
-      },
-    ];
-  });
+  const [monthlyCards, setMonthlyCards] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [saveTimeout, setSaveTimeout] = useState(null);
+
+  // Load user's monthly cards from Firestore
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (!user) return;
+
+      try {
+        const userDoc = await getDoc(doc(db, "users", user.id));
+
+        if (userDoc.exists() && userDoc.data().monthlyCards) {
+          setMonthlyCards(userDoc.data().monthlyCards);
+        } else {
+          // Initialize with current month if no data exists
+          const currentDate = new Date();
+          const initialCard = {
+            id: 1,
+            month: currentDate.toLocaleString("default", { month: "long" }),
+            year: currentDate.getFullYear(),
+            timestamp: currentDate.getTime(),
+            goals: [],
+          };
+          setMonthlyCards([initialCard]);
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUserData();
+  }, [user]);
+
+  // Debounced save function
+  const debouncedSave = useCallback(
+    (newMonthlyCards) => {
+      // Clear any existing timeout
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+      }
+
+      // Set new timeout
+      const timeoutId = setTimeout(async () => {
+        if (!user) return;
+
+        try {
+          await setDoc(
+            doc(db, "users", user.id),
+            {
+              monthlyCards: newMonthlyCards,
+            },
+            { merge: true }
+          );
+        } catch (error) {
+          console.error("Error saving data:", error);
+        }
+      }, 3000);
+
+      setSaveTimeout(timeoutId);
+
+      // Cleanup timeout on component unmount
+      return () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+      };
+    },
+    [user, saveTimeout]
+  );
 
   const getGridClass = (cardCount) => {
     if (cardCount === 1) return styles.gridOne;
@@ -39,24 +102,39 @@ function Dashboard() {
     const currentYear = currentDate.getFullYear();
 
     // Check if the current month already exists
-    // const monthExists = monthlyCards.some(
-    //   (card) => card.month === currentMonth && card.year === currentYear
-    // );
+    const monthExists = monthlyCards.some(
+      (card) => card.month === currentMonth && card.year === currentYear
+    );
 
-    // if (monthExists) {
-    //   alert(`A goal card for ${currentMonth} ${currentYear} already exists!`);
-    //   return;
-    // }
+    if (monthExists) {
+      alert(`A goal card for ${currentMonth} ${currentYear} already exists!`);
+      return;
+    }
 
     const newCard = {
       id: monthlyCards.length + 1,
       month: currentMonth,
       year: currentYear,
       timestamp: currentDate.getTime(),
+      goals: [],
     };
 
-    setMonthlyCards((prevCards) => [newCard, ...prevCards]);
+    const updatedCards = [newCard, ...monthlyCards];
+    setMonthlyCards(updatedCards);
+    debouncedSave(updatedCards);
   };
+
+  const handleGoalsUpdate = (cardId, updatedGoals) => {
+    const updatedCards = monthlyCards.map((card) =>
+      card.id === cardId ? { ...card, goals: updatedGoals } : card
+    );
+    setMonthlyCards(updatedCards);
+    debouncedSave(updatedCards);
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <section className={styles.dashboard}>
@@ -80,8 +158,12 @@ function Dashboard() {
         {monthlyCards.map((card) => (
           <GoalTracker
             key={card.id}
-            initialMonth={card.month}
+            month={card.month}
             year={card.year}
+            goals={card.goals || []}
+            onGoalsUpdate={(updatedGoals) =>
+              handleGoalsUpdate(card.id, updatedGoals)
+            }
           />
         ))}
       </div>

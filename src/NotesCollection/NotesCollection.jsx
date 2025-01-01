@@ -1,9 +1,15 @@
 import NoteCard from "../Notes/NoteCard";
 import styles from "./NotesCollection.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useUser } from "@clerk/clerk-react";
+import { db } from "../config/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 function NotesCollection() {
+  const { user } = useUser();
   const [selectedMonth, setSelectedMonth] = useState(null);
+  const [notesData, setNotesData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   const months = [
     "January",
@@ -20,103 +26,53 @@ function NotesCollection() {
     "December",
   ];
 
-  const mockNotes = {
-    January: [
-      {
-        id: 1,
-        goalName: "Learn React",
-        growth: "I've become more confident in building complex UIs",
-        memorable: "Successfully building my first custom hook!",
-      },
-      {
-        id: 2,
-        goalName: "Exercise 3x weekly",
-        growth: "Developed better discipline and routine",
-        memorable: "Completing my first 5K run",
-      },
-      {
-        id: 3,
-        goalName: "Read More Books",
-        growth:
-          "This month, I’ve read two thought-provoking books on productivity and personal development. Each book offered unique perspectives that reshaped how I approach time management and prioritize tasks effectively.",
-        memorable:
-          "One memorable moment was when I applied a technique from the book to my daily schedule and saw immediate positive results—it was a lightbulb moment!",
-      },
-      {
-        id: 4,
-        goalName: "Learn React",
-        growth:
-          "I've mastered the ability to build reusable and dynamic components in React. Understanding how hooks work has completely transformed how I think about managing state and side effects in my applications. The process was challenging but extremely rewarding.",
-        memorable:
-          "Completing a fully functional to-do app using custom hooks and context API was an incredible achievement!",
-      },
-      {
-        id: 5,
-        goalName: "Exercise 3x Weekly",
-        growth:
-          "Building a consistent exercise routine has significantly improved my mental and physical health. Over the past month, I’ve started to enjoy the process rather than seeing it as a chore. This change in mindset is a major win.",
-        memorable:
-          "Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing! Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing.Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing",
-      },
-      {
-        id: 6,
-        goalName: "Read More Books",
-        growth:
-          "This month, I’ve read two thought-provoking books on productivity and personal development. Each book offered unique perspectives that reshaped how I approach time management and prioritize tasks effectively.",
-        memorable:
-          "One memorable moment was when I applied a technique from the book to my daily schedule and saw immediate positive results—it was a lightbulb moment!",
-      },
-      {
-        id: 7,
-        goalName: "Exercise 3x Weekly",
-        growth:
-          "Building a consistent exercise routine has significantly improved my mental and physical health. Over the past month, I’ve started to enjoy the process rather than seeing it as a chore. This change in mindset is a major win.",
-        memorable:
-          "Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing! Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing.Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing",
-      },
-    ],
-    February: [
-      {
-        id: 0,
-        goalName: "Read 2 books",
-        growth:
-          "Expanded my knowledge in software architecture and design patterns",
-        memorable: "The aha moment understanding design patterns",
-      },
-      {
-        id: 1,
-        goalName: "Learn React",
-        growth:
-          "I've mastered the ability to build reusable and dynamic components in React. Understanding how hooks work has completely transformed how I think about managing state and side effects in my applications. The process was challenging but extremely rewarding.",
-        memorable:
-          "Completing a fully functional to-do app using custom hooks and context API was an incredible achievement!",
-      },
-      {
-        id: 2,
-        goalName: "Exercise 3x Weekly",
-        growth:
-          "Building a consistent exercise routine has significantly improved my mental and physical health. Over the past month, I’ve started to enjoy the process rather than seeing it as a chore. This change in mindset is a major win.",
-        memorable:
-          "Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing! Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing.Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing",
-      },
-      {
-        id: 3,
-        goalName: "Read More Books",
-        growth:
-          "This month, I’ve read two thought-provoking books on productivity and personal development. Each book offered unique perspectives that reshaped how I approach time management and prioritize tasks effectively.",
-        memorable:
-          "One memorable moment was when I applied a technique from the book to my daily schedule and saw immediate positive results—it was a lightbulb moment!",
-      },
-      {
-        id: 4,
-        goalName: "Exercise 3x Weekly",
-        growth:
-          "Building a consistent exercise routine has significantly improved my mental and physical health. Over the past month, I’ve started to enjoy the process rather than seeing it as a chore. This change in mindset is a major win.",
-        memorable:
-          "Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing! Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing. Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing.Running my first 10K marathon with friends was an unforgettable milestone. The energy and camaraderie during the event were amazing",
-      },
-    ],
-  };
+  // Fetch notes data from db
+  useEffect(() => {
+    const fetchNotes = async () => {
+      if (!user) return;
+
+      try {
+        const userRef = doc(db, "users", user.id);
+        const docSnap = await getDoc(userRef);
+
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+
+          // Transform monthlyCards data into the notes format
+          const notes = {};
+
+          if (userData.monthlyCards) {
+            userData.monthlyCards.forEach((card) => {
+              const monthNotes = card.goals
+                .filter((goal) => goal.completed && goal.reflection)
+                .map((goal, index) => ({
+                  id: goal.id || `${card.month}-${index}`,
+                  goalName: goal.text,
+                  growth: goal.reflection.growth,
+                  memorable: goal.reflection.memorable,
+                }));
+
+              if (monthNotes.length > 0) {
+                notes[card.month] = monthNotes;
+              }
+            });
+          }
+
+          setNotesData(notes);
+        }
+      } catch (error) {
+        console.error("Error fetching notes:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchNotes();
+  }, [user]);
+
+  if (isLoading) {
+    return <div className={styles.loading}>Loading your reflections...</div>;
+  }
 
   return (
     <div className={styles.container}>
@@ -130,24 +86,24 @@ function NotesCollection() {
           <button
             key={month}
             onClick={() => setSelectedMonth(month)}
-            disabled={!mockNotes[month]}
+            disabled={!notesData[month]}
             className={`${styles.monthButton} ${
               selectedMonth === month ? styles.active : ""
             }`}
           >
             {month}
-            {mockNotes[month] && (
+            {notesData[month] && (
               <span className={styles.noteCount}>
-                {mockNotes[month].length}
+                {notesData[month].length}
               </span>
             )}
           </button>
         ))}
       </div>
 
-      {selectedMonth && mockNotes[selectedMonth] && (
+      {selectedMonth && notesData[selectedMonth] && (
         <div className={styles.notesGrid}>
-          {mockNotes[selectedMonth].map((note) => (
+          {notesData[selectedMonth].map((note) => (
             <NoteCard
               key={note.id}
               goalName={note.goalName}
@@ -158,7 +114,7 @@ function NotesCollection() {
         </div>
       )}
 
-      {selectedMonth && !mockNotes[selectedMonth] && (
+      {selectedMonth && !notesData[selectedMonth] && (
         <div className={styles.emptyState}>
           <p>No reflections found for {selectedMonth}</p>
         </div>

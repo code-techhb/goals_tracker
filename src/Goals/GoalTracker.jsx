@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Pencil, Plus } from "lucide-react";
 import styles from "./GoalTracker.module.css";
+import { useNavigate } from "react-router-dom";
 
-function GoalTracker() {
-  const [goals, setGoals] = useState([]);
+function GoalTracker({ month, year, goals = [], onGoalsUpdate }) {
+  const navigate = useNavigate();
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   const [isReflectionModalOpen, setIsReflectionModalOpen] = useState(false);
   const [currentGoal, setCurrentGoal] = useState("");
@@ -14,7 +15,9 @@ function GoalTracker() {
   const [editingIndex, setEditingIndex] = useState(null);
   const [completedGoalIndex, setCompletedGoalIndex] = useState(null);
 
-  const currentMonth = new Date().toLocaleString("default", { month: "long" });
+  const getEncouragingMessage = (goal) => {
+    return `Share your amazing journey with "${goal.text}" 🌟 – Your reflections are inspiring!`;
+  };
 
   const createConfetti = () => {
     const confettiCount = 100;
@@ -24,14 +27,12 @@ function GoalTracker() {
       const confetti = document.createElement("div");
       confetti.className = styles.confetti;
 
-      // Random position, color, and animation delay
       confetti.style.left = Math.random() * 100 + "vw";
       confetti.style.animationDelay = Math.random() * 3 + "s";
       confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 80%, 50%)`;
 
       container.appendChild(confetti);
 
-      // Remove confetti after animation
       setTimeout(() => {
         confetti.remove();
       }, 3000);
@@ -40,26 +41,27 @@ function GoalTracker() {
 
   const handleAddGoal = () => {
     if (currentGoal.trim()) {
+      let updatedGoals;
+
       if (editingIndex !== null) {
-        const updatedGoals = [...goals];
-        updatedGoals[editingIndex] = {
-          ...goals[editingIndex],
-          text: currentGoal,
-        };
-        setGoals(updatedGoals);
-        setEditingIndex(null);
+        updatedGoals = goals.map((goal, index) =>
+          index === editingIndex ? { ...goal, text: currentGoal } : goal
+        );
       } else {
-        setGoals([
-          ...goals,
-          {
-            text: currentGoal,
-            completed: false,
-            reflection: null,
-          },
-        ]);
+        const newGoal = {
+          id: Date.now().toString(),
+          text: currentGoal,
+          completed: false,
+          reflection: null,
+          createdAt: new Date().toISOString(),
+        };
+        updatedGoals = [...goals, newGoal];
       }
+
+      onGoalsUpdate(updatedGoals);
       setCurrentGoal("");
       setIsGoalModalOpen(false);
+      setEditingIndex(null);
     }
   };
 
@@ -76,33 +78,42 @@ function GoalTracker() {
       setCompletedGoalIndex(index);
       setIsReflectionModalOpen(true);
     } else {
-      const updatedGoals = [...goals];
-      updatedGoals[index] = {
-        ...updatedGoals[index],
-        completed: false,
-        reflection: null,
-      };
-      setGoals(updatedGoals);
+      const updatedGoals = goals.map((g, i) =>
+        i === index ? { ...g, completed: false, reflection: null } : g
+      );
+      onGoalsUpdate(updatedGoals);
     }
   };
 
   const handleSaveReflection = () => {
-    const updatedGoals = [...goals];
-    updatedGoals[completedGoalIndex] = {
-      ...updatedGoals[completedGoalIndex],
-      completed: true,
-      reflection: { ...currentReflection },
-    };
-    setGoals(updatedGoals);
+    const updatedGoals = goals.map((goal, index) =>
+      index === completedGoalIndex
+        ? {
+            ...goal,
+            completed: true,
+            completedAt: new Date().toISOString(),
+            reflection: {
+              growth: currentReflection.growth.trim(),
+              memorable: currentReflection.memorable.trim(),
+            },
+          }
+        : goal
+    );
+
+    onGoalsUpdate(updatedGoals);
     setCurrentReflection({ growth: "", memorable: "" });
     setIsReflectionModalOpen(false);
     setCompletedGoalIndex(null);
   };
 
+  const navigateToNotes = () => {
+    navigate("/notes");
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>{currentMonth}</h2>
+        <h2>{month}</h2>
       </div>
 
       <div className={styles.content}>
@@ -111,7 +122,7 @@ function GoalTracker() {
         )}
 
         {goals.map((goal, index) => (
-          <div key={index} className={styles.goalItem}>
+          <div key={goal.id || index} className={styles.goalItem}>
             <input
               type="checkbox"
               checked={goal.completed}
@@ -125,12 +136,19 @@ function GoalTracker() {
             >
               Goal Nº {index + 1}: {goal.text}
             </span>
-            <button
-              onClick={() => handleEdit(index)}
-              className={styles.editButton}
-            >
-              <Pencil size={16} />
-            </button>
+            {!goal.completed && (
+              <button
+                onClick={() => handleEdit(index)}
+                className={styles.editButton}
+              >
+                <Pencil size={16} />
+              </button>
+            )}
+            {goal.completed && !goal.reflection && (
+              <div className={styles.encouragement}>
+                {getEncouragingMessage(goal)}
+              </div>
+            )}
           </div>
         ))}
 
@@ -154,8 +172,8 @@ function GoalTracker() {
         <div>
           Number of goals Achieved: {goals.filter((g) => g.completed).length}
         </div>
-        <button className={styles.notesButton}>
-          Check {currentMonth} Notes
+        <button onClick={navigateToNotes} className={styles.notesButton}>
+          Check {month} Notes
         </button>
       </div>
 
@@ -191,10 +209,13 @@ function GoalTracker() {
       {isReflectionModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h3> 🥳 Reflect on Your Achievement</h3>
+            <h3>🥳 YES! You DID it!</h3>
             <div className={styles.reflectionForm}>
               <div className={styles.formGroup}>
-                <label>How has achieving this goal helped you grow 🤩?</label>
+                <label>
+                  Every accomplishment adds to your journey - How has achieving
+                  this goal helped you grow 🤩?
+                </label>
                 <textarea
                   value={currentReflection.growth}
                   onChange={(e) =>
@@ -204,11 +225,13 @@ function GoalTracker() {
                     })
                   }
                   className={styles.textarea}
+                  placeholder="Document your growth..."
                 />
               </div>
               <div className={styles.formGroup}>
                 <label>
-                  What was the most memorable moment in working towards it 😍?
+                  Every achievement has a special moment 🌟 - what was yours
+                  while working towards this goal?
                 </label>
                 <textarea
                   value={currentReflection.memorable}
@@ -219,6 +242,7 @@ function GoalTracker() {
                     })
                   }
                   className={styles.textarea}
+                  placeholder="Capture your unforgettable moment..."
                 />
               </div>
               <div className={styles.modalButtons}>
@@ -226,14 +250,19 @@ function GoalTracker() {
                   onClick={() => {
                     setIsReflectionModalOpen(false);
                     setCompletedGoalIndex(null);
+                    setCurrentReflection({ growth: "", memorable: "" });
                   }}
                   className={styles.cancelButton}
                 >
-                  Cancel
+                  Come Back Later
                 </button>
                 <button
                   onClick={handleSaveReflection}
                   className={styles.submitButton}
+                  disabled={
+                    !currentReflection.growth.trim() ||
+                    !currentReflection.memorable.trim()
+                  }
                 >
                   Save Reflection
                 </button>
