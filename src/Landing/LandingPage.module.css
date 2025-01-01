@@ -39,3 +39,62 @@
   font-size: 3rem;
   color: var(--white);
 }
+/* media queries */
+/* Large screens */
+@media (min-width: 1200px) {
+  .textContainerLP h1 {
+    font-size: 6rem;
+  }
+
+  .textContainerLP p {
+    font-size: 3.5rem;
+  }
+}
+
+@media (max-width: 1199px) {
+  .textContainerLP h1 {
+    font-size: 4.5rem;
+  }
+
+  .textContainerLP p {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .landingPage {
+    padding: 1.5rem;
+  }
+
+  .textContainerLP h1 {
+    font-size: 3.5rem;
+  }
+
+  .textContainerLP p {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .landingPage {
+    padding: 1rem;
+  }
+
+  .textContainerLP h1 {
+    font-size: 3rem;
+  }
+
+  .textContainerLP p {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .textContainerLP h1 {
+    font-size: 2.5rem;
+  }
+
+  .textContainerLP p {
+    font-size: 1.4rem;
+  }
+}

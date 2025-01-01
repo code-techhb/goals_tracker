@@ -1,4 +1,5 @@
 .footer {
+  width: 100%;
   color: var(--text-color-primary);
   padding: 1rem;
   text-align: center;
@@ -13,4 +14,29 @@
 
 .footer a:hover {
   color: var(--white);
+}
+/* media queries */
+@media (max-width: 1199px) {
+  .footer {
+    padding: 1.2rem;
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .footer {
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+
+  .footer a {
+    padding: 0.2rem 0;
+  }
+}
+
+@media (max-width: 320px) {
+  .footer {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
 }

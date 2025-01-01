@@ -91,7 +91,7 @@
   font-family: "Itim";
   padding: 1.2rem 2.4rem;
   background-color: var(--secondary-color);
-  color: white;
+  color: var(--white);
   text-decoration: none;
   border-radius: 0.8rem;
   margin-top: 2rem;
@@ -103,4 +103,112 @@
 .button:hover {
   color: var(--black);
   background-color: var(--background-color);
+}
+
+/* media queries */
+@media (max-width: 1200px) {
+  .gridThree,
+  .gridFour {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .textContainerDash h2 {
+    font-size: 4rem;
+  }
+
+  .textContainerDash p {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 1199px) {
+  .dashboard {
+    padding: 1.5rem;
+  }
+
+  .header {
+    padding: 3rem 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .textContainerDash h2 {
+    font-size: 3.5rem;
+  }
+
+  .textContainerDash p {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .gridTwo,
+  .gridThree,
+  .gridFour {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard {
+    padding: 1rem;
+  }
+
+  .header {
+    padding: 2.5rem 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .textContainerDash h2 {
+    font-size: 3rem;
+  }
+
+  .textContainerDash p {
+    font-size: 1.4rem;
+  }
+
+  .button {
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .dashboard {
+    padding: 0.8rem;
+  }
+
+  .header {
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .textContainerDash h2 {
+    font-size: 2.5rem;
+  }
+
+  .textContainerDash p {
+    font-size: 1.2rem;
+  }
+
+  .gridOne {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+
+  .goals {
+    gap: 1.6rem;
+  }
+
+  .button {
+    padding: 0.8rem 1.6rem;
+    margin-top: 1.5rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .textContainerDash h2 {
+    font-size: 2rem;
+  }
+
+  .textContainerDash p {
+    font-size: 1rem;
+  }
 }
