@@ -1,5 +1,5 @@
 import { signOut as firebaseSignOut, getAuth } from "firebase/auth";
-import styles from "./Navbar.module.css";
+import styles from "./NavBar.module.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
