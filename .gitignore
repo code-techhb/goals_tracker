@@ -43,6 +43,7 @@ Thumbs.db
 .env.development.local
 .env.production.local
 .env.test.local
+src/utils/encryption.js
 
 # IDE-specific files
 .idea/

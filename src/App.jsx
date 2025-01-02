@@ -17,7 +17,6 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/sign-in" element={<AuthPage mode="sign-in" />} />
-          <Route path="/sign-up" element={<AuthPage mode="sign-up" />} />
           {/* temp */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/notes" element={<Notes />} />

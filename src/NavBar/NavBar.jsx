@@ -18,9 +18,6 @@ function Navbar() {
               <li>
                 <NavLink to="/sign-in">Login</NavLink>
               </li>
-              <li>
-                <NavLink to="/sign-up">Sign Up</NavLink>
-              </li>
             </>
           )}
           {isSignedIn && (

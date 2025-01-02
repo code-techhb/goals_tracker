@@ -15,7 +15,7 @@ function LandingPage() {
             achievements in 2025. Start small, dream big, and <br />
             🎉 celebrate every step of the journey!
           </p>
-          <Link to="/sign-up" className="button">
+          <Link to="/sign-in" className="button">
             Get your Digital Tracker now
           </Link>
         </div>

@@ -1,97 +1,159 @@
-import styles from "./Dashboard.module.css";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useUser } from "@clerk/clerk-react";
-import { useState, useEffect, useCallback } from "react";
-import GoalTracker from "../Goals/GoalTracker";
 import { db } from "../config/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import {
+  generateEncryptionKey,
+  encryptGoals,
+  decryptGoals,
+} from "../utils/encryption";
+import GoalTracker from "../Goals/GoalTracker";
+import styles from "./Dashboard.module.css";
 
 function Dashboard() {
   const { user } = useUser();
   const [monthlyCards, setMonthlyCards] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [saveTimeout, setSaveTimeout] = useState(null);
+  const [error, setError] = useState(null);
+  const [encryptionKey, setEncryptionKey] = useState(null);
+  const saveTimeoutRef = useRef(null);
+  const unsubscribeRef = useRef(null);
 
-  // Load user's monthly cards from Firestore
+  // Initialize encryption key
   useEffect(() => {
-    const loadUserData = async () => {
+    const initializeEncryption = async () => {
       if (!user) return;
-
       try {
-        const userDoc = await getDoc(doc(db, "users", user.id));
-
-        if (userDoc.exists() && userDoc.data().monthlyCards) {
-          setMonthlyCards(userDoc.data().monthlyCards);
-        } else {
-          // Initialize with current month if no data exists
-          const currentDate = new Date();
-          const initialCard = {
-            id: 1,
-            month: currentDate.toLocaleString("default", { month: "long" }),
-            year: currentDate.getFullYear(),
-            timestamp: currentDate.getTime(),
-            goals: [],
-          };
-          setMonthlyCards([initialCard]);
-        }
+        const { key } = await generateEncryptionKey(user.id);
+        setEncryptionKey(key);
       } catch (error) {
-        console.error("Error loading user data:", error);
-      } finally {
-        setIsLoading(false);
+        console.error("Error generating encryption key:", error);
+        setError("Failed to initialize encryption. Please try again later.");
       }
     };
 
-    loadUserData();
+    initializeEncryption();
   }, [user]);
 
-  // Debounced save function
+  // Load and subscribe to user's monthly cards
+  useEffect(() => {
+    if (!user || !encryptionKey) {
+      !user && setIsLoading(false);
+      return;
+    }
+
+    const userDocRef = doc(db, "users", user.id);
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Set up real-time listener
+      unsubscribeRef.current = onSnapshot(
+        userDocRef,
+        async (docSnapshot) => {
+          try {
+            if (docSnapshot.exists() && docSnapshot.data().monthlyCards) {
+              const encryptedCards = docSnapshot.data().monthlyCards;
+
+              // Process each card and decrypt its goals
+              const decryptedCards = await Promise.all(
+                encryptedCards.map(async (card) => ({
+                  ...card,
+                  goals: await decryptGoals(encryptionKey, card.goals || []),
+                }))
+              );
+
+              setMonthlyCards(decryptedCards);
+            } else {
+              // Initialize with current month if no data exists
+              const currentDate = new Date();
+              const initialCard = {
+                id: 1,
+                month: currentDate.toLocaleString("default", { month: "long" }),
+                year: currentDate.getFullYear(),
+                timestamp: currentDate.getTime(),
+                goals: [],
+              };
+              setMonthlyCards([initialCard]);
+
+              // Set initial data in Firestore
+              await setDoc(userDocRef, { monthlyCards: [initialCard] });
+            }
+          } catch (error) {
+            console.error("Error processing encrypted data:", error);
+            setError("Failed to decrypt your data. Please try again later.");
+          } finally {
+            setIsLoading(false);
+          }
+        },
+        (error) => {
+          console.error("Error loading user data:", error);
+          setError("Failed to load your data. Please try again later.");
+          setIsLoading(false);
+        }
+      );
+    } catch (error) {
+      console.error("Error setting up data listener:", error);
+      setError("Failed to connect to the database. Please try again later.");
+      setIsLoading(false);
+    }
+
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+      }
+    };
+  }, [user, encryptionKey]);
+
+  // Debounced save function with encryption
   const debouncedSave = useCallback(
-    (newMonthlyCards) => {
+    async (newMonthlyCards) => {
+      if (!user || !encryptionKey) return;
+
       // Clear any existing timeout
-      if (saveTimeout) {
-        clearTimeout(saveTimeout);
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
       }
 
       // Set new timeout
-      const timeoutId = setTimeout(async () => {
-        if (!user) return;
-
+      saveTimeoutRef.current = setTimeout(async () => {
         try {
+          // Encrypt each card's goals before saving
+          const encryptedCards = await Promise.all(
+            newMonthlyCards.map(async (card) => ({
+              ...card,
+              goals: await encryptGoals(encryptionKey, card.goals || []),
+            }))
+          );
+
+          const userDocRef = doc(db, "users", user.id);
           await setDoc(
-            doc(db, "users", user.id),
+            userDocRef,
             {
-              monthlyCards: newMonthlyCards,
+              monthlyCards: encryptedCards,
+              lastUpdated: new Date().toISOString(),
             },
             { merge: true }
           );
         } catch (error) {
-          console.error("Error saving data:", error);
+          console.error("Error saving encrypted data:", error);
+          setError("Failed to save your changes. Please try again.");
         }
-      }, 3000);
-
-      setSaveTimeout(timeoutId);
-
-      // Cleanup timeout on component unmount
-      return () => {
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-        }
-      };
+      }, 2000);
     },
-    [user, saveTimeout]
+    [user, encryptionKey]
   );
 
-  const getGridClass = (cardCount) => {
+  const getGridClass = useCallback((cardCount) => {
     if (cardCount === 1) return styles.gridOne;
     if (cardCount === 2) return styles.gridTwo;
     if (cardCount === 3) return styles.gridThree;
     return styles.gridFour;
-  };
+  }, []);
 
-  const addNewMonth = () => {
+  const addNewMonth = useCallback(() => {
     if (monthlyCards.length >= 12) {
-      alert(
-        " 🚨 Maximum of 12 months reached. How do you feel about your 2025 year? The 2026 planner is coming soon."
-      );
+      alert("🚨 Maximum of 12 months reached.");
       return;
     }
 
@@ -101,12 +163,11 @@ function Dashboard() {
     });
     const currentYear = currentDate.getFullYear();
 
-    // Check if the current month already exists
-    const monthExists = monthlyCards.some(
-      (card) => card.month === currentMonth && card.year === currentYear
-    );
-
-    if (monthExists) {
+    if (
+      monthlyCards.some(
+        (card) => card.month === currentMonth && card.year === currentYear
+      )
+    ) {
       alert(`A goal card for ${currentMonth} ${currentYear} already exists!`);
       return;
     }
@@ -122,31 +183,25 @@ function Dashboard() {
     const updatedCards = [newCard, ...monthlyCards];
     setMonthlyCards(updatedCards);
     debouncedSave(updatedCards);
-  };
+  }, [monthlyCards, debouncedSave]);
 
-  const handleGoalsUpdate = (cardId, updatedGoals) => {
-    const updatedCards = monthlyCards.map((card) =>
-      card.id === cardId ? { ...card, goals: updatedGoals } : card
-    );
-    setMonthlyCards(updatedCards);
-    debouncedSave(updatedCards);
-  };
+  if (error) {
+    return <div className={styles.error}>{error}</div>;
+  }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className={styles.loading}>Loading your dashboard...</div>;
   }
 
   return (
     <section className={styles.dashboard}>
       <div className={styles.header}>
         <div className={styles.textContainerDash}>
-          <h2>Hey {user ? user.firstName : "welcome to your dashboard"}</h2>
+          <h2>Hey {user?.firstName ?? "there"}</h2>
           <p>
-            Turn your dreams into milestones and let your progress be your
-            motivation ⚡️.
-            <br /> With StepBy25, stay Inspired, stay Focused, and celebrate
-            every victory 🎯
-            <br /> – no matter how small! 🎉
+            Welcome to StepBy25 where you turn your dreams into milestones and
+            let <br />
+            your progress be your motivation ⚡️
           </p>
           <button onClick={addNewMonth} className={styles.button}>
             Add New Month
@@ -161,9 +216,13 @@ function Dashboard() {
             month={card.month}
             year={card.year}
             goals={card.goals || []}
-            onGoalsUpdate={(updatedGoals) =>
-              handleGoalsUpdate(card.id, updatedGoals)
-            }
+            onGoalsUpdate={(updatedGoals) => {
+              const updatedCards = monthlyCards.map((c) =>
+                c.id === card.id ? { ...c, goals: updatedGoals } : c
+              );
+              setMonthlyCards(updatedCards);
+              debouncedSave(updatedCards);
+            }}
           />
         ))}
       </div>

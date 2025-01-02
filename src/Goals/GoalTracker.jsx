@@ -3,6 +3,7 @@ import { Pencil, Plus } from "lucide-react";
 import styles from "./GoalTracker.module.css";
 import { useNavigate } from "react-router-dom";
 
+// eslint-disable-next-line react/prop-types
 function GoalTracker({ month, year, goals = [], onGoalsUpdate }) {
   const navigate = useNavigate();
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
