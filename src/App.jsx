@@ -3,9 +3,10 @@ import LandingPage from "./Landing/LandingPage";
 import Footer from "./Footer/Footer";
 import "./global.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import AuthPage from "./Authentication/AuthPage";
+import ProtectedRoute from "./protected/protectedRoute";
 import Dashboard from "./Dashboard/Dashboard";
 import Notes from "./NotesCollection/NotesCollection";
+import SignIn from "./sign-in/sign-in";
 
 function App() {
   return (
@@ -16,11 +17,24 @@ function App() {
         {/* envelop landing page in routes */}
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/sign-in" element={<AuthPage mode="sign-in" />} />
-          <Route path="/sign-up" element={<AuthPage mode="sign-up" />} />
-          {/* temp */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/notes" element={<Notes />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          {/* Protected Routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notes"
+            element={
+              <ProtectedRoute>
+                <Notes />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
 
         {/* end routes here */}

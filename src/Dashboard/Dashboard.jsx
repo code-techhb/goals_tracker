@@ -1,21 +1,83 @@
 import styles from "./Dashboard.module.css";
-import { useUser } from "@clerk/clerk-react";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import GoalTracker from "../Goals/GoalTracker";
+import { db } from "../config/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 function Dashboard() {
-  const { user } = useUser();
-  const [monthlyCards, setMonthlyCards] = useState(() => {
-    const currentDate = new Date();
-    return [
-      {
-        id: 1,
-        month: currentDate.toLocaleString("default", { month: "long" }),
-        year: currentDate.getFullYear(),
-        timestamp: currentDate.getTime(),
-      },
-    ];
-  });
+  const [user, setUser] = useState(null);
+  const [monthlyCards, setMonthlyCards] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [saveTimeout, setSaveTimeout] = useState(null);
+  const auth = getAuth();
+
+  // Listen for auth state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    // Cleanup subscription
+    return () => unsubscribe();
+  }, [auth]);
+
+  // Load user's monthly cards data
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (!user) return;
+
+      try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+
+        // Check if user exists and has monthly cards - returning user case
+        if (userDoc.exists() && userDoc.data().monthlyCards) {
+          setMonthlyCards(userDoc.data().monthlyCards);
+        } else {
+          setMonthlyCards([]);
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUserData();
+  }, [user]);
+
+  const debouncedSave = useCallback(
+    (newMonthlyCards) => {
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+      }
+
+      // Set new timeout
+      const timeoutId = setTimeout(async () => {
+        if (!user) return;
+
+        try {
+          await setDoc(
+            doc(db, "users", user.uid),
+            {
+              monthlyCards: newMonthlyCards,
+            },
+            { merge: true }
+          );
+        } catch (error) {
+          console.error("Error saving data:", error);
+        }
+      }, 3000);
+
+      setSaveTimeout(timeoutId);
+
+      return () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+      };
+    },
+    [user, saveTimeout]
+  );
 
   const getGridClass = (cardCount) => {
     if (cardCount === 1) return styles.gridOne;
@@ -39,36 +101,48 @@ function Dashboard() {
     const currentYear = currentDate.getFullYear();
 
     // Check if the current month already exists
-    // const monthExists = monthlyCards.some(
-    //   (card) => card.month === currentMonth && card.year === currentYear
-    // );
-
-    // if (monthExists) {
-    //   alert(`A goal card for ${currentMonth} ${currentYear} already exists!`);
-    //   return;
-    // }
+    const monthExists = monthlyCards.some(
+      (card) => card.month === currentMonth && card.year === currentYear
+    );
+    if (monthExists) {
+      alert(`A goal card for ${currentMonth} ${currentYear} already exists!`);
+      return;
+    }
 
     const newCard = {
       id: monthlyCards.length + 1,
       month: currentMonth,
       year: currentYear,
       timestamp: currentDate.getTime(),
+      goals: [],
     };
 
-    setMonthlyCards((prevCards) => [newCard, ...prevCards]);
+    const updatedCards = [newCard, ...monthlyCards];
+    setMonthlyCards(updatedCards);
+    debouncedSave(updatedCards);
   };
+
+  const handleGoalsUpdate = (cardId, updatedGoals) => {
+    const updatedCards = monthlyCards.map((card) =>
+      card.id === cardId ? { ...card, goals: updatedGoals } : card
+    );
+    setMonthlyCards(updatedCards);
+    debouncedSave(updatedCards);
+  };
+
+  if (isLoading) {
+    return <div className="loading">Loading ⌛️...</div>;
+  }
 
   return (
     <section className={styles.dashboard}>
       <div className={styles.header}>
         <div className={styles.textContainerDash}>
-          <h2>Hey {user ? user.firstName : "welcome to your dashboard"}</h2>
+          <h2>Hey {user ? user.displayName : "there"}!</h2>
           <p>
-            Turn your dreams into milestones and let your progress be your
-            motivation ⚡️.
-            <br /> With StepBy25, stay Inspired, stay Focused, and celebrate
-            every victory 🎯
-            <br /> – no matter how small! 🎉
+            Welcome to your StepBy25 Dashboard where you turn your dreams into
+            <br />
+            milestones and let your progress be your motivation ⚡️.
           </p>
           <button onClick={addNewMonth} className={styles.button}>
             Add New Month
@@ -76,15 +150,26 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className={`${styles.goals} ${getGridClass(monthlyCards.length)}`}>
-        {monthlyCards.map((card) => (
-          <GoalTracker
-            key={card.id}
-            initialMonth={card.month}
-            year={card.year}
-          />
-        ))}
-      </div>
+      {/* users with no cards */}
+      {monthlyCards.length === 0 ? (
+        <div className={styles.emptyState}>
+          <p>Click Add New Month to start tracking your goals.</p>
+        </div>
+      ) : (
+        <div className={`${styles.goals} ${getGridClass(monthlyCards.length)}`}>
+          {monthlyCards.map((card) => (
+            <GoalTracker
+              key={card.id}
+              month={card.month}
+              year={card.year}
+              goals={card.goals || []}
+              onGoalsUpdate={(updatedGoals) =>
+                handleGoalsUpdate(card.id, updatedGoals)
+              }
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

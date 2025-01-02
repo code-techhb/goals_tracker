@@ -184,12 +184,17 @@
   font-weight: 400;
 }
 
+.textarea::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
 .confetti {
   position: fixed;
   width: 1rem;
-  height: 1rem;
+  height: 2rem;
   pointer-events: none;
-  animation: confettiFall 3s linear forwards;
+  animation: confettiFall 4s linear forwards;
   z-index: 1000;
 }
 

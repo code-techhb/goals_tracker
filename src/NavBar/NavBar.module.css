@@ -25,6 +25,7 @@
 
 .navLinks {
   display: flex;
+  align-items: center;
   gap: 2rem;
 }
 
@@ -33,4 +34,16 @@
   color: var(--text-color-dark);
   border-radius: 16px;
   padding: 0.5rem 1rem;
+}
+
+.logout {
+  background-color: var(--secondary-color);
+  color: var(--text-color-dark);
+  border-radius: 16px;
+  padding: 0.5rem 1rem;
+}
+
+.logout:hover {
+  background-color: var(--text-color-dark);
+  color: var(--secondary-color);
 }

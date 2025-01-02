@@ -104,6 +104,11 @@
   color: var(--black);
   background-color: var(--background-color);
 }
+.emptyState p {
+  font-size: 1.6rem;
+  text-align: center;
+  color: var(--text-color-dark);
+}
 
 /* media queries */
 @media (max-width: 1200px) {
