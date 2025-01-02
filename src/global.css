@@ -65,3 +65,12 @@ body {
   margin: 0 2rem;
   line-height: 1.5;
 }
+
+/* loading */
+.loading {
+  font-size: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}

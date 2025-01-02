@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="15" fill="#9c7a4f" />
+  
+  <!-- Outer ring gradient -->
+  <circle cx="16" cy="16" r="11" fill="none" stroke="#c19a6b" stroke-width="2.5" />
+  
+  <!-- Middle ring -->
+  <circle cx="16" cy="16" r="7" fill="none" stroke="#f6f1e1" stroke-width="2" />
+  
+  <!-- Center target -->
+  <circle cx="16" cy="16" r="3" fill="#2f1e0e" />
+  
+  <!-- Direction markers with subtle gradient -->
+  <path d="M16 4 L16 8" stroke="#e9d7b6" stroke-width="2" stroke-linecap="round" />
+  <path d="M16 24 L16 28" stroke="#e9d7b6" stroke-width="2" stroke-linecap="round" />
+  <path d="M4 16 L8 16" stroke="#e9d7b6" stroke-width="2" stroke-linecap="round" />
+  <path d="M24 16 L28 16" stroke="#e9d7b6" stroke-width="2" stroke-linecap="round" />
+</svg>

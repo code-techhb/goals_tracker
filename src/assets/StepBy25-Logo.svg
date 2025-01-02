@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Base Logo/Icon -->
+  <defs>
+    <!-- Gradient for depth -->
+    <linearGradient id="backgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9c7a4f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#715f47;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c19a6b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b7a78a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Circle with gradient -->
+  <circle cx="256" cy="256" r="240" fill="url(#backgroundGradient)" />
+  
+  <!-- Outer decorative ring -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="url(#ringGradient)" stroke-width="24" />
+  
+  <!-- Middle ring -->
+  <circle cx="256" cy="256" r="140" fill="none" stroke="#f6f1e1" stroke-width="20" />
+  
+  <!-- Inner ring -->
+  <circle cx="256" cy="256" r="80" fill="none" stroke="#e9d7b6" stroke-width="16" />
+  
+  <!-- Center target -->
+  <circle cx="256" cy="256" r="40" fill="#2f1e0e" />
+  
+  <!-- Compass points -->
+  <path d="M256 16 L256 96" stroke="#e9d7b6" stroke-width="24" stroke-linecap="round" />
+  <path d="M256 416 L256 496" stroke="#e9d7b6" stroke-width="24" stroke-linecap="round" />
+  <path d="M16 256 L96 256" stroke="#e9d7b6" stroke-width="24" stroke-linecap="round" />
+  <path d="M416 256 L496 256" stroke="#e9d7b6" stroke-width="24" stroke-linecap="round" />
+</svg>
